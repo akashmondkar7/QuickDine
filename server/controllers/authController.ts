@@ -5,5 +5,27 @@ import { Request, Response } from "express";
 
 
 export const registerUser =async (req:Request,res :Response): Promise<void> => {
-    
+    try {
+        
+    } catch (error) {
+        
+    }
+}
+// get /api/auth/login
+
+export const loginUser =async (req:Request,res :Response): Promise<void> => {
+    try {
+        
+    } catch (error) {
+        
+    }
+}
+
+
+export const getme =async (req:Request,res :Response): Promise<void> => {
+    try {
+        
+    } catch (error) {
+        
+    }
 }
