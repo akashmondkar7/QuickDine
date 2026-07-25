@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import jwt, { JsonWebTokenError } from 'jsonwebtoken'
-
+import { User } from "../models/user.js";
+import bcrypt from 'bcrypt';
 // Helper to generate JWT token
 
 const generateToken =(id:string)=>{
@@ -15,7 +16,22 @@ const generateToken =(id:string)=>{
 
 export const registerUser =async (req:Request,res :Response): Promise<void> => {
     try {
-       const {name,email,password,phone,role}=req.body 
+       const {name,email,password,phone,role}=req.body ;
+       if( !name || !email || !password){
+        res.status(400).json({message:"please enter all required fields"})
+      return; 
+    }
+     //check if user exists
+     const  userExists =await User.findOne({email})
+
+     if(!userExists){
+        res.status(400).json({message:"user already exists"})
+        return;
+     }
+      // hash password
+      const salt = await bcrypt.genSalt(10)
+      const hashedPassword
+
     } catch (error) {
         
     }
