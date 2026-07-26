@@ -30,10 +30,34 @@ export const registerUser =async (req:Request,res :Response): Promise<void> => {
      }
       // hash password
       const salt = await bcrypt.genSalt(10)
-      const hashedPassword
+      const hashedPassword = await bcrypt.hash(password,salt);
 
-    } catch (error) {
-        
+      //create user 
+
+      const user = await User.create({
+        name,
+        email,
+        password:hashedPassword,
+        phone,
+        role,
+      })
+
+      if (user){
+        res.status(201).json({
+            _id:user._id,
+            name: user.name,
+            email:user.email,
+            phone:user.phone,
+            role:user.role,
+            token: generateToken(user._id.toString())
+        })
+      }else{
+        res.status(400).json({message:"Invalid user data"})
+      }
+
+    } catch (error:any) {
+        console.log(error);
+        res.status(400).json({message:error.message})
     }
 }
 // get /api/auth/login
