@@ -64,11 +64,40 @@ export const registerUser =async (req:Request,res :Response): Promise<void> => {
 
 export const loginUser =async (req:Request,res :Response): Promise<void> => {
     try {
-        
-    } catch (error) {
-        
+        const {email,password}=req.body ;
+       if(  !email || !password){
+        res.status(400).json({message:"please provide email and password"})
+      return; 
     }
-}
+     //check for user
+    const user = await User.findOne({email})
+      if(!user){
+        res.status(400).json({message:"Invalid email or password"})
+        return;
+      }
+
+      // Check if password matches (user.password is not defined because we queried it)
+      const isMatch =await bcrypt.compare(password,user.password||"")
+      if(!isMatch){
+        res.status(400).json({message:"Invalid email or password"})
+        return;
+      }
+       res.json({
+            _id:user._id,
+            name: user.name,
+            email:user.email,
+            phone:user.phone,
+            role:user.role,
+            token: generateToken(user._id.toString())
+        })
+    
+      
+      
+    } catch (error:any) {
+        console.log(error);
+        res.status(400).json({message:error.message})
+    }
+
 
 
 export const getme =async (req:Request,res :Response): Promise<void> => {
