@@ -5,7 +5,7 @@ import bcrypt from 'bcrypt';
 // Helper to generate JWT token
 
 const generateToken =(id:string)=>{
-   return jwt.sign({id},process.env.JWT_SECRET as string ,{expireIn:"30d"})
+   return jwt.sign({id}, process.env.JWT_SECRET as string, { expiresIn: "30d" })
 }
 
 
@@ -24,7 +24,7 @@ export const registerUser =async (req:Request,res :Response): Promise<void> => {
      //check if user exists
      const  userExists =await User.findOne({email})
 
-     if(!userExists){
+     if(userExists){
         res.status(400).json({message:"user already exists"})
         return;
      }
@@ -97,8 +97,7 @@ export const loginUser =async (req:Request,res :Response): Promise<void> => {
         console.log(error);
         res.status(400).json({message:error.message})
     }
-
-
+}
 
 export const getme =async (req:Request,res :Response): Promise<void> => {
     try {
