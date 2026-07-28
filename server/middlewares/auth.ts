@@ -41,3 +41,4 @@ export const protect = async (req:AuthRequest,res:Response,next:NextFunction): P
 export const adminOnly=(req:AuthRequest,res:Response,next:NextFunction)=>{
 
 }
+
