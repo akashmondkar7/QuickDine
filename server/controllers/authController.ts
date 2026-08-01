@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import jwt, { JsonWebTokenError } from 'jsonwebtoken'
 import { User } from "../models/user.js";
 import bcrypt from 'bcrypt';
+import { AuthRequest } from "../middlewares/auth.js";
 // Helper to generate JWT token
 
 const generateToken =(id:string)=>{
@@ -99,10 +100,15 @@ export const loginUser =async (req:Request,res :Response): Promise<void> => {
     }
 }
 
-export const getme =async (req:Request,res :Response): Promise<void> => {
+export const getme =async (req:AuthRequest,res :Response): Promise<void> => {
     try {
-        
-    } catch (error) {
-        
+        if(!req.user){
+          res.status(401).json({message:"Not authorized"})
+          return;
+        }
+        res.json(req.user)
+    } catch (error:any) {
+        console.error(error)
+        res.status(400).json({message: error.message})
     }
 }
