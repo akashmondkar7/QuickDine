@@ -47,3 +47,12 @@ export const adminOnly=(req:AuthRequest,res:Response,next:NextFunction):void=>{
 
 }
 
+export const ownerOnly=(req:AuthRequest,res:Response,next:NextFunction):void=>{
+     if(req.user && (req.user.role === "owner" ||  req.user.role === "admin")){
+        next()
+     }else{
+        res.status(403).json({message:"Access denied, restorent owner role required"})
+     }
+
+}
+
