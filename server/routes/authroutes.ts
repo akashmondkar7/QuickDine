@@ -1,10 +1,12 @@
 import { Router } from "express";
-import { register } from "node:module";
-import { loginUser, registerUser } from "../controllers/authController.js";
+import { getme, loginUser, registerUser } from "../controllers/authController.js";
+import { protect } from "../middlewares/auth.js";
 
 
-const authRouter = Router()
+export  const authRouter = Router()
 
 authRouter.post("/register",registerUser)
 authRouter.post("/login",loginUser)
+authRouter.get("/me",protect, getme)
+
 
