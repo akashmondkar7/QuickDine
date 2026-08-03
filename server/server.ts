@@ -1,5 +1,5 @@
 import "dotenv/config";
-import express, { Request, Response } from 'express';
+import express, { Request, Response, NextFunction } from 'express';
 import cors from "cors";
 import connectDB from "./config/db.js";
 import { authRouter } from "./routes/authroutes.js";
@@ -21,11 +21,11 @@ app.get('/', (req: Request, res: Response) => {
 app.use("/api/auth",authRouter)
 
 // Global error handler
-app.use(()>{err:Error, req:Request, res:response, next:NextFunction }=>{
-    console.error("Unhandle Error:",err);
+app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
+    console.error("Unhandled Error:", err);
     res.status(500).json({
-        message:err.message || "Internal Server Error",
-        stack:process.env.NODE_ENV === "production" ? undefined: error.stack,
+        message: err.message || "Internal Server Error",
+        stack: process.env.NODE_ENV === "production" ? undefined : err.stack,
     })
 })
 
