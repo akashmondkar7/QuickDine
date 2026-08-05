@@ -15,10 +15,10 @@ export interface IBooking extends Document{
 
 }
 
-const UserSchema = new Schema<IUser>(
+const UserSchema = new Schema<IBooking>(
     {
-      name:{type:String,required:true},
-      email:{type:String,required:true,unique:true,trim:true ,lowercase:true},
+      user:{type:Schema.Types.ObjectId,ref:"User",required:true},
+      restaurant:{type:Schema.Types.ObjectId,ref:"Restaurant",required:true},
       password:{type:String,required:true,minlength:6},
       phone:{type:String,required:true,minlength:10},
       role:{type:String,enum:["user","admin","owner"],default:"user"},
