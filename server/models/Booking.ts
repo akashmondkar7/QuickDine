@@ -16,7 +16,7 @@ export interface IBooking extends Document{
 
 }
 
-const UserSchema = new Schema<IBooking>(
+const BookingSchema = new Schema<IBooking>(
     {
       user:{type:Schema.Types.ObjectId,ref:"User",required:true},
       restaurant:{type:Schema.Types.ObjectId,ref:"Restaurant",required:true},
@@ -36,11 +36,11 @@ const UserSchema = new Schema<IBooking>(
     }
    
 
-)
+);
 // auto generate referance code on save
-BookingSchema.pre("save",function(){
-   if(!this.bookingId){
-    this.bookingId`GR-${crypto.randomBytes(4).toString("hex").toUpperCase()}`
+BookingSchema.pre("save",function(this:any){
+   if(! this.bookingId){
+    this.bookingId = `GR-${crypto.randomBytes(4).toString("hex").toUpperCase()}`
    }
 })
 

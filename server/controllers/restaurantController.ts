@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { Restaurant } from "../models/Restaurant.js";
 import jwt from 'jsonwebtoken';
 import { User } from "../models/user.js";
+import { Booking } from "../models/Booking.js";
 
 // Get all restaurants with search and filters
 // GET/api/restaurants
@@ -99,10 +100,10 @@ export const getRestaurantBySlug = async (req:Request,res:Response) : Promise<vo
        let isAuthorized =false;
        if(req.headers.authorization && req.headers.authorization.startsWith("Bearer")){
         try {
-          const token = req.headers.authorization.split("")[1];
+          const token = req.headers.authorization.split(" ")[1];
           const decoded = jwt.verify(token,process.env.JWT_SECRET as string) as {id:string};
           const user = await User.findById(decoded.id);
-          if(user&& (user.role === 'admin') || (user.role === "owner" &&  restaurant.owner.toString()=== user._id.toString())){
+          if(user && ((user.role === 'admin') || (user.role === "owner" &&  restaurant.owner.toString()=== user._id.toString()))){
             isAuthorized =true
           }
         } catch (err) {
@@ -143,7 +144,25 @@ export const getRestaurantAvaibility= async (req:Request,res:Response) : Promise
 
     // Get all active bookings on this date for  the restaurant
     
+     const bookings = await Booking.find({
+      restaurant:restaurant._id,
+      date:bookingDate,
+      status:"confirmed",
 
+     })
+     //Map slots to available capacities
+     const avaibility = restaurant.availableSlote.map((slot:string)=>{
+      const bookedSeats= bookings.filter((b)=>b.time===slot).reduce((sum,b)=>sum + b.guests,0)
+      const totalSeats =restaurant.totalSeats ||20;
+      const availableSeats =Math.max(0,totalSeats -bookedSeats);
+      return{
+        time: slot,
+        availableSeats,
+        isAvailable: availableSeats>0
+      }
+     })
+
+     res.json(avaibility)
 
    } catch (error:any) {
      console.error(error);
