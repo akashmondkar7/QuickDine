@@ -41,7 +41,43 @@ export const createOwnerRestaurant = async (req:AuthRequest, res:Response):Promi
 
         // Generate slug from name
 
-        const slug =name.
+        const slug =name.toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/(^-|-$)+g,"");
+
+        const slugExists= await Restaurant.findOne({slug});
+        if(slugExists){
+            res.status(400).json({message:"A restaurant with this name already exists"});
+            return;
+
+        }
+
+        // Handle image
+
+        let imageUrl="";
+        if(req.file){
+           // handle image upload
+        }
+
+        //setup parsed tags and slots
+
+        const parsedTags =typeof tags ==="string" ? tags.split(",").map((t)=>t.trim()):tags ||[];
+        const parsedSlots = typeof availableSlots === "string" ? availableSlots.split(",").map((s)=> s.trim()): availableSlots || ["17:00","18:00","19:00","20:00","21:00"];
+
+        const restaurant = await Restaurant.create({
+            name,
+            slug,
+            description,
+            cuisine,
+            priceRange,
+            location,
+            address,
+            chef,
+            image:imageUrl,
+            tags:parsedTags,
+            availableSeats:parsedSlots,
+            totalSeats:totalSeats ? Number(totalSeats):20,
+            owner:req.user?._id,
+            status:"pending"
+        })
 
         
 
