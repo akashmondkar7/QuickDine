@@ -55,6 +55,7 @@ export const createOwnerRestaurant = async (req:AuthRequest, res:Response):Promi
         let imageUrl="";
         if(req.file){
            // handle image upload
+           
         }
 
         //setup parsed tags and slots
@@ -78,6 +79,9 @@ export const createOwnerRestaurant = async (req:AuthRequest, res:Response):Promi
             owner:req.user?._id,
             status:"pending"
         })
+
+
+        res.status(201).json(restaurant);
 
         
 
